@@ -14,17 +14,18 @@
 
 #include <cmath>
 #include <cstdio>
-#ifdef _WIN32
-#define _CRT_RAND_S
-#endif
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
-
 #include <new>
 
 #include "mkvwriter.hpp"
 #include "webmids.hpp"
+
+#ifdef _MSC_VER
+// Disable MSVC warnings that suggest making code non-portable.
+#pragma warning(disable : 4996)
+#endif
 
 namespace mkvmuxer {
 
@@ -606,10 +607,7 @@ mkvmuxer::uint64 mkvmuxer::MakeUID(unsigned int* seed) {
     // TODO(fgalligan): Move random number generation to platform specific code.
 #ifdef _WIN32
     (void)seed;
-    unsigned int random_value;
-    const errno_t e = rand_s(&random_value);
-    (void)e;
-    const int32 nn  = random_value;
+    const int32 nn = rand();
 #elif __ANDROID__
     int32 temp_num = 1;
     int fd = open("/dev/urandom", O_RDONLY);
